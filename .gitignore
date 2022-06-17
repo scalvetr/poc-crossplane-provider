@@ -9,3 +9,4 @@ cover.out
 .DS_Store
 
 **/zz_generated.*.go
+/package/*.xpkg
