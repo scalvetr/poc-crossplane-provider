@@ -12,7 +12,8 @@ kind: ProviderConfig
 metadata:
   name: tenant1
 spec:
-  api_url: "http://localhost:8080"
+  #api_url: "http://localhost:8080"
+  api_url: "https://service-api.localtest.me/"
   tenant: "tenant1"
   credentials:
     source: Secret
