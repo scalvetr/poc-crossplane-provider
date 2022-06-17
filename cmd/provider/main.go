@@ -38,13 +38,13 @@ import (
 
 	"github.com/scalvetr/poc-crossplane-provider/apis"
 	"github.com/scalvetr/poc-crossplane-provider/apis/v1alpha1"
-	template "github.com/scalvetr/poc-crossplane-provider/internal/controller"
+	poc "github.com/scalvetr/poc-crossplane-provider/internal/controller"
 	"github.com/scalvetr/poc-crossplane-provider/internal/controller/features"
 )
 
 func main() {
 	var (
-		app            = kingpin.New(filepath.Base(os.Args[0]), "Template support for Crossplane.").DefaultEnvars()
+		app            = kingpin.New(filepath.Base(os.Args[0]), "poc support for Crossplane.").DefaultEnvars()
 		debug          = app.Flag("debug", "Run with debug logging.").Short('d').Bool()
 		leaderElection = app.Flag("leader-election", "Use leader election for the controller manager.").Short('l').Default("false").OverrideDefaultFromEnvar("LEADER_ELECTION").Bool()
 
@@ -86,7 +86,7 @@ func main() {
 		RenewDeadline:              func() *time.Duration { d := 50 * time.Second; return &d }(),
 	})
 	kingpin.FatalIfError(err, "Cannot create controller manager")
-	kingpin.FatalIfError(apis.AddToScheme(mgr.GetScheme()), "Cannot add Template APIs to scheme")
+	kingpin.FatalIfError(apis.AddToScheme(mgr.GetScheme()), "Cannot add POC APIs to scheme")
 
 	o := controller.Options{
 		Logger:                  log,
@@ -115,6 +115,6 @@ func main() {
 		})), "cannot create default store config")
 	}
 
-	kingpin.FatalIfError(template.Setup(mgr, o), "Cannot setup Template controllers")
+	kingpin.FatalIfError(poc.Setup(mgr, o), "Cannot setup poc controllers")
 	kingpin.FatalIfError(mgr.Start(ctrl.SetupSignalHandler()), "Cannot start controller manager")
 }
