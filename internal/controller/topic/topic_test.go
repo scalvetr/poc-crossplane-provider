@@ -54,7 +54,7 @@ func observation(exists bool) managed.ExternalObservation {
 	return managed.ExternalObservation{ResourceExists: exists, ResourceUpToDate: exists, ConnectionDetails: managed.ConnectionDetails{}}
 }
 func buildClient() poc.POCService {
-	service, _ := poc.NewService("tenant1", "http://localhost:8080", []byte("ABC"))
+	service, _ := poc.NewService("tenant1", "http://localhost:8080/v1", []byte("ABC"))
 	return service
 }
 
