@@ -12,8 +12,11 @@ kind: ProviderConfig
 metadata:
   name: tenant1
 spec:
-  #api_url: "http://localhost:8080"
-  api_url: "https://service-api.localtest.me/v1"
+  #api_url: "http://localhost:8080/v1"
+  # external url (ingress from outside the cluster)
+  #api_url: "http://service-api.localtest.me/v1"
+  # internal url
+  api_url: "http://service-api.service-api:8080/v1"
   tenant: "tenant1"
   credentials:
     source: Secret
