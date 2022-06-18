@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"github.com/scalvetr/poc-crossplane-provider/internal/client/poc"
 	poc2 "github.com/scalvetr/poc-crossplane-provider/service-client/pkg/poc"
+	"reflect"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/pkg/errors"
@@ -46,6 +47,7 @@ const (
 	errGetCreds     = "cannot get credentials"
 
 	errNewClient   = "cannot create new Service"
+	errGetTopic    = "external observation of the Topic coudn't be fetch"
 	errCreateTopic = "cannot create new Topic"
 	errUpdateTopic = "cannot update Topic"
 	errDeleteTopic = "cannot delete Topic"
@@ -99,7 +101,7 @@ type connector struct {
 func (c *connector) Connect(ctx context.Context, mg resource.Managed) (managed.ExternalClient, error) {
 	cr, ok := mg.(*v1alpha1.Topic)
 	if !ok {
-		return nil, errors.New(errNotTopic)
+		return nil, errors.New(errNotTopic + " => " + reflect.TypeOf(mg).Name())
 	}
 
 	if err := c.usage.Track(ctx, mg); err != nil {
@@ -136,7 +138,7 @@ type external struct {
 func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.ExternalObservation, error) {
 	cr, ok := mg.(*v1alpha1.Topic)
 	if !ok {
-		return managed.ExternalObservation{}, errors.New(errNotTopic)
+		return managed.ExternalObservation{}, errors.New(errNotTopic + " => " + reflect.TypeOf(mg).Name())
 	}
 
 	// These fmt statements should be removed in the real implementation.
@@ -145,7 +147,7 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 	topicObservation := cr.Status.AtProvider
 	topic, err := c.service.GetTopic(topicParams.Name)
 	if err != nil {
-		return managed.ExternalObservation{}, errors.New(errNotTopic)
+		return managed.ExternalObservation{}, errors.New(errGetTopic)
 	}
 	upToDate := topicParams.Partitions == topic.Partitions && topicObservation.Status == topic.Status
 
@@ -169,7 +171,7 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 func (c *external) Create(ctx context.Context, mg resource.Managed) (managed.ExternalCreation, error) {
 	cr, ok := mg.(*v1alpha1.Topic)
 	if !ok {
-		return managed.ExternalCreation{}, errors.New(errNotTopic)
+		return managed.ExternalCreation{}, errors.New(errNotTopic + " => " + reflect.TypeOf(mg).Name())
 	}
 
 	fmt.Printf("Creating: %+v", cr)
@@ -194,7 +196,7 @@ func (c *external) Create(ctx context.Context, mg resource.Managed) (managed.Ext
 func (c *external) Update(ctx context.Context, mg resource.Managed) (managed.ExternalUpdate, error) {
 	cr, ok := mg.(*v1alpha1.Topic)
 	if !ok {
-		return managed.ExternalUpdate{}, errors.New(errNotTopic)
+		return managed.ExternalUpdate{}, errors.New(errNotTopic + " => " + reflect.TypeOf(mg).Name())
 	}
 
 	fmt.Printf("Updating: %+v", cr)
@@ -219,7 +221,7 @@ func (c *external) Update(ctx context.Context, mg resource.Managed) (managed.Ext
 func (c *external) Delete(ctx context.Context, mg resource.Managed) error {
 	cr, ok := mg.(*v1alpha1.Topic)
 	if !ok {
-		return errors.New(errNotTopic)
+		return errors.New(errNotTopic + " => " + reflect.TypeOf(mg).Name())
 	}
 
 	fmt.Printf("Deleting: %+v", cr)
