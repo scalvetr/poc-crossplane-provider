@@ -46,7 +46,7 @@ const (
 	errGetCreds     = "cannot get credentials"
 
 	errNewClient   = "cannot create new Service"
-	errGetTopic    = "external observation of the Topic coudn't be fetch"
+	errGetTopic    = "external observation of the Topic coudn't be fetch: %w"
 	errCreateTopic = "cannot create new Topic"
 	errUpdateTopic = "cannot update Topic"
 	errDeleteTopic = "cannot delete Topic"
@@ -146,15 +146,16 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 	topicObservation := cr.Status.AtProvider
 	topic, err := c.service.GetTopic(topicParams.Name)
 	if err != nil {
-		return managed.ExternalObservation{}, errors.New(errGetTopic + " => " + err.Error())
+		return managed.ExternalObservation{}, fmt.Errorf(errGetTopic, err)
 	}
-	upToDate := topicParams.Partitions == topic.Partitions && topicObservation.Status == topic.Status
+	exists := topic != nil
+	upToDate := exists && topicParams.Partitions == topic.Partitions && topicObservation.Status == topic.Status
 
 	return managed.ExternalObservation{
 		// Return false when the external resource does not exist. This lets
 		// the managed resource reconciler know that it needs to call Create to
 		// (re)create the resource, or that it has successfully been deleted.
-		ResourceExists: true,
+		ResourceExists: exists,
 
 		// Return false when the external resource exists, but it not up to date
 		// with the desired managed resource state. This lets the managed
