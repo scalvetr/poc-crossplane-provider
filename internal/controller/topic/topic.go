@@ -47,9 +47,9 @@ const (
 
 	errNewClient   = "cannot create new Service"
 	errGetTopic    = "external observation of the Topic coudn't be fetch: %w"
-	errCreateTopic = "cannot create new Topic"
-	errUpdateTopic = "cannot update Topic"
-	errDeleteTopic = "cannot delete Topic"
+	errCreateTopic = "cannot create new Topic: %w"
+	errUpdateTopic = "cannot update Topic: %w"
+	errDeleteTopic = "cannot delete Topic: %w"
 )
 
 var (
@@ -184,7 +184,7 @@ func (c *external) Create(ctx context.Context, mg resource.Managed) (managed.Ext
 		Status:     topicObservation.Status,
 	})
 	if err != nil {
-		return managed.ExternalCreation{}, errors.New(errCreateTopic)
+		return managed.ExternalCreation{}, fmt.Errorf(errCreateTopic, err)
 	}
 	return managed.ExternalCreation{
 		// Optionally return any details that may be required to connect to the
@@ -209,7 +209,7 @@ func (c *external) Update(ctx context.Context, mg resource.Managed) (managed.Ext
 		Status:     topicObservation.Status,
 	})
 	if err != nil {
-		return managed.ExternalUpdate{}, errors.New(errUpdateTopic)
+		return managed.ExternalUpdate{}, fmt.Errorf(errUpdateTopic, err)
 	}
 	return managed.ExternalUpdate{
 		// Optionally return any details that may be required to connect to the
@@ -229,7 +229,7 @@ func (c *external) Delete(ctx context.Context, mg resource.Managed) error {
 	topicParams := cr.Spec.ForProvider
 	err := c.service.DeleteTopic(topicParams.Name)
 	if err != nil {
-		return errors.New(errDeleteTopic)
+		return fmt.Errorf(errDeleteTopic, err)
 	}
 	return nil
 }
