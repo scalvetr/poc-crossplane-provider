@@ -1,6 +1,7 @@
 package poc
 
 import (
+	"errors"
 	"github.com/scalvetr/poc-crossplane-provider/service-client/pkg/poc"
 	"net/http"
 )
@@ -8,6 +9,8 @@ import (
 type POCService struct {
 	POCClient poc.Client
 }
+
+var topicNotFoundError *poc.TopicNotFoundError
 
 func NewService(tenant string, baseUrl string, _ []byte) (POCService, error) {
 	return POCService{
@@ -22,9 +25,12 @@ func NewService(tenant string, baseUrl string, _ []byte) (POCService, error) {
 func (c *POCService) GetTopics() ([]poc.Topic, error) {
 	return c.POCClient.GetTopics()
 }
-
 func (c *POCService) GetTopic(topicName string) (*poc.Topic, error) {
-	return c.POCClient.GetTopic(topicName)
+	topic, err := c.POCClient.GetTopic(topicName)
+	if errors.Is(err, topicNotFoundError) {
+		return nil, nil
+	}
+	return topic, err
 }
 
 func (c *POCService) CreateTopic(t poc.Topic) error {
@@ -32,9 +38,17 @@ func (c *POCService) CreateTopic(t poc.Topic) error {
 }
 
 func (c *POCService) UpdateTopic(t poc.Topic) error {
-	return c.POCClient.UpdateTopic(t)
+	err := c.POCClient.UpdateTopic(t)
+	if errors.Is(err, topicNotFoundError) {
+		return nil
+	}
+	return err
 }
 
 func (c *POCService) DeleteTopic(topicName string) error {
-	return c.POCClient.DeleteTopic(topicName)
+	err := c.POCClient.DeleteTopic(topicName)
+	if errors.Is(err, topicNotFoundError) {
+		return nil
+	}
+	return err
 }
