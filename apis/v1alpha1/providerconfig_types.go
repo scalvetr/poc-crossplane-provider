@@ -51,8 +51,8 @@ type ProviderConfigStatus struct {
 
 // A ProviderConfig configures a poc provider.
 // +kubebuilder:subresource:status
-// +kubebuilder:printcolumn:name="TENANT",type="date",JSONPath=".spec.tenant"
-// +kubebuilder:printcolumn:name="API_URL",type="date",JSONPath=".spec.api_url"
+// +kubebuilder:printcolumn:name="TENANT",type="string",JSONPath=".spec.tenant"
+// +kubebuilder:printcolumn:name="API_URL",type="string",JSONPath=".spec.api_url"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
 // +kubebuilder:printcolumn:name="SECRET-NAME",type="string",JSONPath=".spec.credentials.secretRef.name",priority=1
 // +kubebuilder:resource:scope=Cluster
