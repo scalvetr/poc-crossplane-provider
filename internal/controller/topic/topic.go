@@ -148,9 +148,10 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 	if err != nil {
 		return managed.ExternalObservation{}, fmt.Errorf(errGetTopic, err)
 	}
-	exists := topic != nil
-	upToDate := exists && topicParams.Partitions == topic.Partitions && topicObservation.Status == topic.Status
 
+	topicObservation.Status = topic.Status
+	exists := topic != nil
+	upToDate := exists && topicParams.Partitions == topic.Partitions
 	return managed.ExternalObservation{
 		// Return false when the external resource does not exist. This lets
 		// the managed resource reconciler know that it needs to call Create to
@@ -177,11 +178,9 @@ func (c *external) Create(ctx context.Context, mg resource.Managed) (managed.Ext
 	fmt.Printf("Creating: %+v", cr)
 
 	topicParams := cr.Spec.ForProvider
-	topicObservation := cr.Status.AtProvider
 	err := c.service.CreateTopic(poc2.Topic{
 		Name:       topicParams.Name,
 		Partitions: topicParams.Partitions,
-		Status:     topicObservation.Status,
 	})
 	if err != nil {
 		return managed.ExternalCreation{}, fmt.Errorf(errCreateTopic, err)
@@ -202,11 +201,9 @@ func (c *external) Update(ctx context.Context, mg resource.Managed) (managed.Ext
 	fmt.Printf("Updating: %+v", cr)
 
 	topicParams := cr.Spec.ForProvider
-	topicObservation := cr.Status.AtProvider
 	err := c.service.UpdateTopic(poc2.Topic{
 		Name:       topicParams.Name,
 		Partitions: topicParams.Partitions,
-		Status:     topicObservation.Status,
 	})
 	if err != nil {
 		return managed.ExternalUpdate{}, fmt.Errorf(errUpdateTopic, err)

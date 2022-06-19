@@ -51,6 +51,9 @@ type TopicStatus struct {
 // +kubebuilder:object:root=true
 
 // A Topic is an example API type.
+// +kubebuilder:printcolumn:name="NAME",type="string",JSONPath=".spec.forProvider.name"
+// +kubebuilder:printcolumn:name="PARTITIONS",type="string",JSONPath=".spec.forProvider.partitions"
+// +kubebuilder:printcolumn:name="STATUS",type="string",JSONPath=".status.atProvider.status"
 // +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"

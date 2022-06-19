@@ -16,6 +16,12 @@ spec:
   scope: Cluster
   versions:
   - additionalPrinterColumns:
+    - jsonPath: .spec.tenant
+      name: TENANT
+      type: date
+    - jsonPath: .spec.api_url
+      name: API_URL
+      type: date
     - jsonPath: .metadata.creationTimestamp
       name: AGE
       type: date
