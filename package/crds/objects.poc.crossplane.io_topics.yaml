@@ -21,7 +21,7 @@ spec:
   versions:
   - additionalPrinterColumns:
     - jsonPath: .spec.forProvider.name
-      name: NAME
+      name: TOPIC_NAME
       type: string
     - jsonPath: .spec.forProvider.partitions
       name: PARTITIONS

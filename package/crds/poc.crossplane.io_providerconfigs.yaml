@@ -18,10 +18,10 @@ spec:
   - additionalPrinterColumns:
     - jsonPath: .spec.tenant
       name: TENANT
-      type: date
+      type: string
     - jsonPath: .spec.api_url
       name: API_URL
-      type: date
+      type: string
     - jsonPath: .metadata.creationTimestamp
       name: AGE
       type: date
