@@ -152,10 +152,8 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 	exists := topic != nil
 	upToDate := exists && topicParams.Partitions == topic.Partitions
 
-	if topic == nil {
-		topicObservation.Status = "DELETED"
-	} else {
-		topicObservation.Status = topic.Status
+	if exists {
+		topicObservation.CreationTime = topic.CreationTime
 	}
 	return managed.ExternalObservation{
 		// Return false when the external resource does not exist. This lets
