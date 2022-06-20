@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"github.com/scalvetr/poc-crossplane-provider/internal/client/poc"
 	poc2 "github.com/scalvetr/poc-crossplane-provider/service-client/pkg/poc"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/pkg/errors"
@@ -153,7 +154,9 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 	upToDate := exists && topicParams.Partitions == topic.Partitions
 
 	if exists {
-		topicObservation.CreationTime = topic.CreationTime
+		topicObservation.CreationTime = metav1.Time{
+			Time: topic.CreationTime,
+		}
 	}
 	return managed.ExternalObservation{
 		// Return false when the external resource does not exist. This lets

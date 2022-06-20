@@ -17,11 +17,9 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"reflect"
-	"time"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"reflect"
 
 	xpv1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
@@ -34,7 +32,7 @@ type TopicParameters struct {
 
 // TopicObservation are the observable fields of a Topic.
 type TopicObservation struct {
-	CreationTime time.Time `json:"creationTime,omitempty"`
+	CreationTime metav1.Time `json:"creationTime,omitempty"`
 }
 
 // A TopicSpec defines the desired state of a Topic.
