@@ -18,6 +18,7 @@ package v1alpha1
 
 import (
 	"reflect"
+	"time"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -33,7 +34,7 @@ type TopicParameters struct {
 
 // TopicObservation are the observable fields of a Topic.
 type TopicObservation struct {
-	Status string `json:"status,omitempty"`
+	CreationTime time.Time `json:"creationTime,omitempty"`
 }
 
 // A TopicSpec defines the desired state of a Topic.
@@ -53,7 +54,7 @@ type TopicStatus struct {
 // A Topic is an example API type.
 // +kubebuilder:printcolumn:name="TOPIC_NAME",type="string",JSONPath=".spec.forProvider.name"
 // +kubebuilder:printcolumn:name="PARTITIONS",type="string",JSONPath=".spec.forProvider.partitions"
-// +kubebuilder:printcolumn:name="STATUS",type="string",JSONPath=".status.atProvider.status"
+// +kubebuilder:printcolumn:name="CREATION_TIME",type="date",JSONPath=".status.atProvider.creationTime"
 // +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
